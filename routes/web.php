@@ -5,6 +5,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BoardController; // Tambahkan ini!
 use App\Http\Controllers\ListTaskController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\DashboardController; // Tambahkan ini!
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +22,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 // Route ke home setelah login berhasil
 Route::get('/home', function () {
     return view('dashboard.home'); // Pastikan file home.blade.php ada
-})->name('home');
+})->name('home');   
 
 
 // Route ke board
@@ -68,3 +70,5 @@ Route::put('/list/{listId}/update', [ListTaskController::class, 'update'])->name
 
 // Hapus List
 Route::delete('/list/{listId}/delete', [ListTaskController::class, 'destroy'])->name('list.destroy');
+
+Route::get('/home', [DashboardController::class, 'index'])->name('home');

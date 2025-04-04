@@ -216,13 +216,15 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', function () {
-            let filter = this.value.toLowerCase();
-            let boardItems = document.querySelectorAll('.board-item');
-            boardItems.forEach(function (item) {
-                let text = item.textContent.toLowerCase();
-                item.style.display = text.includes(filter) ? '' : 'none';
-            });
-        });
+    let filter = this.value.toLowerCase();
+    let listItems = document.querySelectorAll('.list-card'); // Ganti ke list-card
+
+    listItems.forEach(function (item) {
+        let text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? '' : 'none';
+    });
+});
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -58,40 +58,42 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="col-md-6 col-xl-3">
-                    <div class="card" style="background-color: #B85C5C;">
-                        <div class="card-body p-3" style="height: 170px">
-                            <h5 class="card-title" style="color: white">Total Board</h5>
-                            <br>
-                            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                                <i class='fas fa-server menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-xl-3">
-                    <div class="card" style="background-color: #B85C5C;">
-                        <div class="card-body p-3" style="height: 170px">
-                            <h5 class="card-title" style="color: white">Total List</h5>
-                            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                                <i class='far fa-envelope-open menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-xl-3">
-                    <div class="card" style="background-color: #B85C5C;">
-                        <div class="card-body p-3" style="height: 170px">
-                            <h5 class="card-title" style="color: white">Total Task</h5>
-                            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                                <i class='fas fa-users menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="card" style="background-color: #B85C5C;">
+        <div class="card-body p-3" style="height: 170px">
+            <h5 class="card-title" style="color: white">Total Board</h5>
+            <h2 style="color: white">{{ $totalBoards }}</h2>
+            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
+                <i class='fas fa-server menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xl-3">
+    <div class="card" style="background-color: #B85C5C;">
+        <div class="card-body p-3" style="height: 170px">
+            <h5 class="card-title" style="color: white">Total List</h5>
+            <h2 style="color: white">{{ $totalLists }}</h2>
+            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
+                <i class='far fa-envelope-open menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xl-3">
+    <div class="card" style="background-color: #B85C5C;">
+        <div class="card-body p-3" style="height: 170px">
+            <h5 class="card-title" style="color: white">Total Task</h5>
+            <h2 style="color: white">{{ $totalTasks }}</h2>
+            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
+                <i class='fas fa-users menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
                 
            
             </div>

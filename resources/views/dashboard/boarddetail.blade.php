@@ -92,9 +92,29 @@
         .dropdown-menu {
             z-index: 999;
         }
-    </style>
-    <style>
-  .popup {
+        
+        .search-bar {
+            width: 250px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 8px 30px 8px 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: gray;
+        }
+
+        .popup {
     display: none;
     position: fixed;
     top: 0;
@@ -104,21 +124,46 @@
     background-color: rgba(0, 0, 0, 0.4);
     justify-content: center;
     align-items: center;
-  }
+    z-index: 1000;
+}
 
-  .popup-content {
+.popup-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
-  }
+    width: 350px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
 
-  .close-btn {
-    float: right;
+/* Animasi agar pop-up muncul dengan efek */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 20px;
     cursor: pointer;
-  }
-</style>
+    color: #333;
+    transition: 0.3s;
+}
+
+.close-btn:hover {
+    color: red;
+}
+    </style>
+
 </head>
 <body>
     <div class="sidebar">
@@ -130,6 +175,11 @@
 
     <div class="content">
         <h2 class="title">{{ $board->name }}</h2>
+
+        <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search List...">
+    <i class="fas fa-search search-icon"></i>
+</div>
 
         {{-- Form Tambah List --}}
         <button class="btn btn-primary" onclick="openPopup()">+ add list</button>
@@ -212,6 +262,20 @@
   function closePopup() {
     document.getElementById('popupForm').style.display = 'none';
   }
+  document.getElementById('searchInput').addEventListener('input', function () {
+    let filter = this.value.toLowerCase();
+    let listItems = document.querySelectorAll('.list-container .list-card');
+
+    listItems.forEach(function (item) {
+        let text = item.textContent.trim().toLowerCase(); // Menghapus spasi ekstra
+        if (text.includes(filter)) {
+            item.style.display = "flex"; // Pastikan tetap terlihat
+        } else {
+            item.style.display = "none"; // Sembunyikan jika tidak cocok
+        }
+    });
+});
+
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
