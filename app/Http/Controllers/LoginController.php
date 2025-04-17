@@ -22,18 +22,18 @@ class LoginController extends Controller
     {
         // Validasi input
         $request->validate([
-            'email' => 'required|email',
+            'username' => ['required', 'string', 'max:255'],
             'password' => 'required',
         ]);
 
-        // Coba autentikasi
-        if (Auth::attempt($request->only('email', 'password'))) {
+        // Coba autentikasi menggunakan username dan password
+        if (Auth::attempt(['name' => $request->username, 'password' => $request->password])) {
+            // Jika login berhasil, redirect ke halaman home
             return redirect()->route('home')->with('success', 'Login berhasil!');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
-
-        return redirect()->route('login')->with('success', 'Registrasi berhasil!');
+        // Jika gagal login, kembali ke form login dengan pesan error
+        return back()->withErrors(['username' => 'Username atau password salah'])->withInput();
     }
 
     /**

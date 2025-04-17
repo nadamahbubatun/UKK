@@ -2,232 +2,270 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToList - Board</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToList - Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-        .sidebar {
-            width: 250px;
-            background-color: #B85C5C;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-        }
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
 
-        .sidebar a {
-            color: white;
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f9e7e7, #fdf7f7);
+      min-height: 100vh;
+      display: flex;
+    }
 
-        .sidebar a.active,
-        .sidebar a:hover {
-            background-color: #A46C6C;
-            border-radius: 5px;
-        }
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(135deg, #ff8c8c, #ffbaba);
+      padding: 30px 20px;
+      height: 100vh;
+      position: fixed;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+      border-top-right-radius: 30px;
+      border-bottom-right-radius: 30px;
+    }
 
-        .content {
-            margin-left: 270px;
-            padding: 30px;
-            width: 100%;
-        }
+    .sidebar h4 {
+      color: white;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
 
-        .title {
-            color: #7A3E3E;
-            font-weight: bold;
-            font-size: 32px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
 
-        .board-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
 
-        .board-card {
-            width: 200px;
-            height: 120px;
-            background-color: #D9D9D9;
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #7A3E3E;
-            font-size: 16px;
-            font-weight: bold;
-        }
+    .content {
+      margin-left: 270px;
+      padding: 40px;
+      width: 100%;
+    }
 
-        .options {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-        }
+    .content h2 {
+      font-weight: 700;
+      color: #ff7070;
+      margin-bottom: 20px;
+    }
 
-        .new-board {
-            font-size: 40px;
-            color: #7A3E3E;
-            cursor: pointer;
-        }
+    .board-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
 
-        .dropdown-menu {
-            z-index: 999;
-        }
+    .board-card {
+      width: 220px;
+      height: 130px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(255, 137, 137, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ff6b6b;
+      font-weight: 600;
+      font-size: 16px;
+      position: relative;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-        .search-bar {
-            width: 250px;
-            margin-bottom: 20px;
-            position: relative;
-        }
+    .board-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(255, 137, 137, 0.25);
+    }
 
-        .search-bar input {
-            padding: 8px 30px 8px 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            width: 100%;
-        }
+    .options {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
 
-        .search-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: gray;
-        }
+    .new-board {
+      font-size: 48px;
+      font-weight: bold;
+      background: white;
+      color: #ff6b6b;
+    }
 
-        /* Pop-up style */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            justify-content: center;
-            align-items: center;
-        }
+    .search-bar {
+      width: 300px;
+      margin-bottom: 30px;
+      position: relative;
+    }
 
-        .popup-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-        }
+    .search-bar input {
+      padding: 10px 40px 10px 15px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
 
-        .close-btn {
-            float: right;
-            font-size: 20px;
-            cursor: pointer;
-        }
-    </style>
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: gray;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 22px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .popup-content h5 {
+      margin-bottom: 20px;
+      color: #ff6b6b;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .content {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .board-card {
+        width: 100%;
+      }
+
+      .search-bar {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h4>ToList</h4>
-        <a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a>
-        <a href="{{ route('board.index') }}" class="active"><i class="fas fa-box"></i> Board</a>
-        <a href="#"><i class="fas fa-calendar-alt"></i> Calendar</a>
+
+  <div class="sidebar">
+    <h4><i class="fas fa-check-circle me-2"></i>ToList ✨</h4>
+    <a href="{{ route('home') }}"><i class="fas fa-home me-2"></i> Home</a>
+    <a href="{{ route('board.index') }}" class="active"><i class="fas fa-columns me-2"></i> Board</a>
+    <a href="{{ route('calendar.show') }}"><i class="fas fa-calendar-alt me-2"></i> Calendar</a>
+  </div>
+
+  <div class="content">
+    <h2>Your Boards</h2>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search Board...">
+      <i class="fas fa-search search-icon"></i>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <h2 class="title">ToList</h2>
-        <h5>Your Boards</h5>
-
-        <!-- Input Search -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search Board...">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-
-        <!-- Board Container -->
-        <div class="board-container" id="boardContainer">
-            @foreach($boards as $board)
-            <div class="board-card position-relative board-item">
-                <a href="{{ route('board.show', $board->id) }}" class="board-card">{{ $board->name }}</a>
-                <div class="dropdown options">
-                    <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBoardModal{{ $board->id }}">Edit</button>
-                        </li>
-                        <li>
-                            <form action="{{ route('board.destroy', $board->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="dropdown-item text-danger" type="submit" onclick="return confirm('Yakin ingin menghapus board ini?')">Delete</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            @endforeach
-        </div>
-
-        <!-- Add New Board -->
-        <h5>Create New Board</h5>
-        <div class="board-container">
-            <div class="board-card new-board" onclick="openPopup()">+</div>
-        </div>
-    </div>
-
-    <!-- Pop-up Form Add List -->
-    <div id="popupForm" class="popup">
-        <div class="popup-content">
-            <span class="close-btn" onclick="closePopup()">&times;</span>
-            <h5>Create New Board</h5>
-            <form action="{{ route('board.store') }}" method="POST">
+    <div class="board-container" id="boardContainer">
+      @foreach($boards as $board)
+      <a href="{{ route('board.show', $board->id) }}" class="board-card board-item">
+        {{ $board->name }}
+        <div class="dropdown options">
+          <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editBoardModal{{ $board->id }}">Edit</button>
+            </li>
+            <li>
+              <form action="{{ route('board.destroy', $board->id) }}" method="POST">
                 @csrf
-                <input type="text" name="name" placeholder="Board Name" required class="form-control mb-3">
-                <button type="submit" class="btn btn-primary w-100">Create Board</button>
-            </form>
+                @method('DELETE')
+                <button class="dropdown-item text-danger" type="submit" onclick="return confirm('Yakin ingin menghapus board ini?')">Delete</button>
+              </form>
+            </li>
+          </ul>
         </div>
+      </a>
+      @endforeach
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        function openPopup() {
-            document.getElementById('popupForm').style.display = 'flex';
-        }
+    <h5 class="mt-4">Create New Board</h5>
+    <div class="board-container">
+      <div class="board-card new-board" onclick="openPopup()">+</div>
+    </div>
+  </div>
 
-        function closePopup() {
-            document.getElementById('popupForm').style.display = 'none';
-        }
+  <!-- Pop-up -->
+  <div id="popupForm" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h5>Create New Board</h5>
+      <form action="{{ route('board.store') }}" method="POST">
+        @csrf
+        <input type="text" name="name" placeholder="Board Name" required class="form-control mb-3">
+        <button type="submit" class="btn btn-danger w-100">Create</button>
+      </form>
+    </div>
+  </div>
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-    let filter = this.value.toLowerCase();
-    let listItems = document.querySelectorAll('.list-card'); // Ganti ke list-card
+  <script>
+    function openPopup() {
+      document.getElementById('popupForm').style.display = 'flex';
+    }
 
-    listItems.forEach(function (item) {
-        let text = item.textContent.toLowerCase();
-        item.style.display = text.includes(filter) ? '' : 'none';
+    function closePopup() {
+      document.getElementById('popupForm').style.display = 'none';
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+      let filter = this.value.toLowerCase();
+      let boardItems = document.querySelectorAll('.board-container .board-item');
+
+      boardItems.forEach(function (item) {
+        let text = item.textContent.trim().toLowerCase();
+        item.style.display = text.includes(filter) ? "flex" : "none";
+      });
     });
-});
+  </script>
 
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToList - Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffe5e5, #ffd6d6);
         }
 
         .sidebar {
             width: 250px;
-            background-color: #B85C5C;
+            background: linear-gradient(to bottom, #ff8c8c, #ffbaba);
             color: white;
             padding: 20px;
             position: fixed;
             height: 100vh;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar a {
             color: white;
             display: block;
-            padding: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
             text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: background 0.3s ease;
         }
 
         .sidebar a.active, .sidebar a:hover {
-            background-color: #A46C6C;
-            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .content {
@@ -44,33 +49,38 @@
 
         .title {
             color: #7A3E3E;
-            font-weight: bold;
-            font-size: 32px;
+            font-weight: 600;
+            font-size: 30px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .add-task {
-            background-color: rgb(198, 129, 129);
+            background: linear-gradient(to right, #ff9a9a, #ffbaba);
             color: white;
-            font-weight: bold;
+            font-weight: 600;
             border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
+            padding: 10px 18px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .add-task:hover {
-            background-color: #c8c8c8;
-        }
-
-        table {
-            background-color: #f8f9fa;
+            background: #ffc2c2;
             color: #7A3E3E;
         }
 
+        table {
+            background-color: white;
+            color: #7A3E3E;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
         th {
-            background-color: rgb(174, 110, 110) !important;
+            background-color: #ff9a9a !important;
             color: white !important;
         }
 
@@ -81,23 +91,66 @@
         .btn-sm {
             margin: 2px;
         }
-        .btn-view{
-            background-color:rgb(188, 143, 143);
+
+        .btn-view {
+            background-color: #f7bdbd;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
-        .btn-delete{
-            background-color:rgb(168, 55, 55);
+
+        .btn-view:hover {
+            background-color: #f0a0a0;
         }
-        .btn-edit{
-            background-color:rgb(127, 80, 80);
+
+        .btn-edit {
+            background-color: #c88787;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
+
+        .btn-edit:hover {
+            background-color: #b86c6c;
+        }
+
+        .btn-delete {
+            background-color: #e05d5d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-delete:hover {
+            background-color: #c14444;
+        }
+
+        .btn-group a, .btn-group form {
+            margin-right: 5px;
+        }
+
     </style>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to delete this task?')) {
+                event.target.closest('form').submit();
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="sidebar">
-        <h4>ToList</h4>
-        <a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a>
-        <a href="#" class="active"><i class="fas fa-box"></i> Board</a>
-        <a href="#"><i class="fas fa-calendar-alt"></i> Calendar</a>
+        <h4 class="mb-4">ToList</h4>
+        <a href="{{ route('home') }}"><i class="fas fa-home me-2"></i>Home</a>
+        <a href="{{ route('board.index') }}" class="active"><i class="fas fa-box me-2"></i>Board</a>
+        <a href="{{ route('calendar.show') }}"><i class="fas fa-calendar-alt me-2"></i>Calendar</a>
     </div>
 
     <div class="content">
@@ -120,32 +173,34 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($tasks as $index => $row)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->name }}</td>
-                        <td>
-                            <form action="{{ route('tasks.updateStatus', $row->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm {{ $row->status == 'Selesai' ? 'btn-success' : 'btn-secondary' }}">
-                                    {{ $row->status }}
-                                </button>
-                            </form>
-                        </td>
-                        <td>{{ $row->priority }}</td>
-                        <td>{{ $row->start_date }}</td>
-                        <td>{{ $row->end_date }}</td>
-                        <td>
-                            <a href="{{ route('tasks.edit', ['boardId' => $boards->id, 'listId' => $lists->id, 'id' => $row->id]) }}" class="btn btn-edit">Edit</a>
-                            <a href="{{ route('tasks.view', $row->id) }}" class="btn btn-view">View</a>
-                            <form action="{{ route('tasks.destroy', $row->id) }}" method="POST" class="d-inline">
+                @foreach($tasks as $task)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $task->name }}</td>
+                    <td>
+                        <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-sm {{ $task->status == 'Selesai' ? 'btn-success' : 'btn-secondary' }}">
+                                {{ $task->status }}
+                            </button>
+                        </form>
+                    </td>
+                    <td>{{ $task->priority }}</td>
+                    <td>{{ $task->start_date }}</td>
+                    <td>{{ $task->end_date }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ route('tasks.edit', ['boardId' => $boards->id, 'listId' => $lists->id, 'id' => $task->id]) }}" class="btn btn-edit">Edit</a>
+                            <a href="{{ route('tasks.view', $task->id) }}" class="btn btn-view">View</a>
+                            <form action="{{ route('tasks.destroy', ['boardId' => $boards->id, 'listId' => $lists->id, 'id' => $task->id]) }}" method="POST" onsubmit="confirmDelete(event)" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin ingin menghapus task ini?')">Delete</button>
+                                <button type="submit" class="btn btn-delete">Delete</button>
                             </form>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>

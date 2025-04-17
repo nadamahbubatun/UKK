@@ -5,100 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToList - Login</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Posisi tengah */
-        .login-container {
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffe5e5, #ffd6d6);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f8f8f8; /* Latar belakang abu-abu terang */
         }
 
-        /* Style untuk card utama */
         .card-custom {
-            background-color: #eee; /* Warna latar card */
-            border-radius: 15px;
-            padding: 30px;
-            width: 350px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        /* Style untuk judul "ToList" */
         .title-pink {
-            color:  #813636; /* Warna pink */
-            font-weight: bold;
+            background: linear-gradient(to right, #ff8c8c, #ffbaba);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 32px;
+            font-weight: 600;
         }
 
-        /* Style untuk label */
         .form-label {
-            font-weight: bold;
-            color: black;
+            font-weight: 500;
             font-size: 14px;
-            margin-bottom: 5px;
-            text-align: left;
-            display: block;
+            margin-bottom: 6px;
+            color: #7a3e3e;
         }
 
-        /* Style untuk input */
         .input-custom {
-            background-color: #c99595; /* Warna input pink soft */
+            background-color: #f3d3d3;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             height: 45px;
-            color: white;
             text-align: center;
-        }
-        .input-custom::placeholder {
-            color: white;
-            opacity: 0.7;
+            color: #7a3e3e;
+            transition: 0.3s;
         }
 
-        /* Style tombol */
+        .input-custom::placeholder {
+            color: #a97a7a;
+        }
+
+        .input-custom:focus {
+            outline: none;
+            box-shadow: 0 0 5px #ffbaba;
+        }
+
         .btn-custom {
-            background-color: #a44d4d; /* Warna tombol merah soft */
+            background: linear-gradient(to right, #ff9a9a, #ffbaba);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             height: 45px;
-            font-weight: bold;
-        }
-        .btn-custom:hover {
-            background-color: #813636; /* Warna lebih gelap saat hover */
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        /* Style untuk link */
+        .btn-custom:hover {
+            background: #ffc1c1;
+            color: #7a3e3e;
+        }
+
         .text-link {
-            color: black;
+            color: #7a3e3e;
             font-size: 14px;
             text-decoration: none;
+            transition: 0.2s;
         }
+
         .text-link:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="card-custom text-center">
-            <h2 class="mb-4 title-pink">ToList</h2> <!-- Warna pink -->
-            <form action="{{ route('register') }}" method="POST">
-                @csrf
-                <div class="mb-3 text-start">
-                    <class for="username" class="form-class">Username</class>
-                    <input type="text" class="form-control input-custom" placeholder="" id="" name="" required>
-                </div>
-                <div class="mb-3 text-start">
-                    <class for="password" class="form-class">Password</class>
-                    <input type="password" class="form-control input-custom" placeholder="" id="" name="" required>
-                </div>
-                <button type="submit" class="btn btn-custom w-100">Sign In</button>
-              
-            </form>
-            <p class="mt-3">
-                <a href="{{ route('register') }}" class="text-link">Create Account</a>
-            </p>
-        </div>
+    <div class="card-custom text-center">
+        <h2 class="mb-4 title-pink">ToList</h2>
+
+        <form action="{{ route('login') }}" method="POST">
+    @csrf
+    <div class="mb-3 text-start">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control input-custom" placeholder="Masukkan username" id="username" name="username" required>
+    </div>
+    <div class="mb-3 text-start">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control input-custom" placeholder="Masukkan password" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-custom w-100 mt-2">Sign In</button>
+</form>
+
+
+        <p class="mt-4">
+            <a href="{{ route('register') }}" class="text-link">Create Account</a>
+        </p>
     </div>
 </body>
 </html>

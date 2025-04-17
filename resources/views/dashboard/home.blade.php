@@ -1,103 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #B85C5C;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-        }
-        .sidebar a {
-            color: white;
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background-color:rgb(193, 125, 125);
-            border-radius: 5px;
-        }
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            width: 100%;
-        }
-        .card {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f9e7e7, #fdf7f7);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(135deg, #ff8c8c, #ffbaba);
+      padding: 30px 20px;
+      height: 100vh;
+      position: fixed;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+      border-top-right-radius: 30px;
+      border-bottom-right-radius: 30px;
+    }
+
+    .sidebar h4 {
+      color: white;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .content {
+      margin-left: 270px;
+      padding: 40px;
+      width: 100%;
+    }
+
+    .content h2 {
+      font-weight: 700;
+      color: #ff7070;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(255, 137, 137, 0.2);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(255, 137, 137, 0.3);
+    }
+
+    .dashboard-icon {
+      font-size: 40px;
+      color: #ff6b6b;
+      margin-bottom: 15px;
+    }
+
+    .dashboard-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .dashboard-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #111;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .content {
+        margin-left: 0;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h4>ToList</h4>
-        <a href=""><i class="fas fa-home"></i> Home</a>
-        <a href="{{ route('board.index') }}" class="active"><i class="fas fa-box"></i> Board</a>
 
-        <a href="#"><i class="fas fa-file-archive"></i> Calendar</a>
-    </div>
-    <div class="content">
-        <span style="color: #B85C5C; font-weight: bold; font-size: 24px;">Welcome!</span>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <p style="color: #B85C5C">Selamat Datang Di ToList</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xl-3">
-    <div class="card" style="background-color: #B85C5C;">
-        <div class="card-body p-3" style="height: 170px">
-            <h5 class="card-title" style="color: white">Total Board</h5>
-            <h2 style="color: white">{{ $totalBoards }}</h2>
-            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                <i class='fas fa-server menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="sidebar">
+    <h4><i class="fas fa-check-circle me-2"></i>ToList ✨</h4>
+    <!-- Home link dengan kondisi active -->
+    <a href="{{ route('home') }}" class="{{ Request::is('home') ? 'active' : '' }}"><i class="fas fa-home me-2"></i> Home</a>
+    <a href="{{ route('board.index') }}" class="{{ Request::is('board*') ? 'active' : '' }}"><i class="fas fa-columns me-2"></i> Board</a>
+    <a href="{{ route('calendar.show') }}" class="{{ Request::is('calendar*') ? 'active' : '' }}"><i class="fas fa-calendar-alt me-2"></i> Calendar</a>
+  </div>
 
-<div class="col-md-6 col-xl-3">
-    <div class="card" style="background-color: #B85C5C;">
-        <div class="card-body p-3" style="height: 170px">
-            <h5 class="card-title" style="color: white">Total List</h5>
-            <h2 style="color: white">{{ $totalLists }}</h2>
-            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                <i class='far fa-envelope-open menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="content">
+    <h2>Welcome back! 🚀</h2>
 
-<div class="col-md-6 col-xl-3">
-    <div class="card" style="background-color: #B85C5C;">
-        <div class="card-body p-3" style="height: 170px">
-            <h5 class="card-title" style="color: white">Total Task</h5>
-            <h2 style="color: white">{{ $totalTasks }}</h2>
-            <div class="icon w-100 h-25 d-flex justify-content-end align-items-end">
-                <i class='fas fa-users menu-icon' style="color:#fafafa; font-size:50px; opacity: 0.7;"></i>
-            </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="dashboard-card text-center">
+          <div class="dashboard-icon"><i class="fas fa-box-open"></i></div>
+          <div class="dashboard-title">Total Board</div>
+          <div class="dashboard-number">{{ $totalBoards }}</div>
         </div>
-    </div>
-</div>
+      </div>
 
-                
-           
-            </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="dashboard-card text-center">
+          <div class="dashboard-icon"><i class="fas fa-stream"></i></div>
+          <div class="dashboard-title">Total List</div>
+          <div class="dashboard-number">{{ $totalLists }}</div>
         </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="dashboard-card text-center">
+          <div class="dashboard-icon"><i class="fas fa-tasks"></i></div>
+          <div class="dashboard-title">Total Task</div>
+          <div class="dashboard-number">{{ $totalTasks }}</div>
+        </div>
+      </div>
     </div>
+  </div>
+
 </body>
 </html>

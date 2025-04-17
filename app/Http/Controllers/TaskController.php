@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\ListTask; // Model untuk list
 use Illuminate\Http\Request;
+use App\Models\Board;  // Pastikan Board di-import di sini
+
 
 class TaskController extends Controller
 {
@@ -12,39 +14,48 @@ class TaskController extends Controller
     {
         $tasks = Task::where('list_id', $listId)->get();
         $lists = ListTask::findOrFail($listId);
-        $boards = \App\Models\Board::findOrFail($boardId);
-        
-        return view('dashboard.listdetail', compact('tasks', 'lists', 'boards'));
+        $boards = Board::findOrFail($boardId);
+    
+        // Pastikan listId dan boardId diteruskan ke view
+        return view('dashboard.listdetail', compact('tasks', 'lists', 'boards', 'boardId', 'listId'));
     }
     
     
     // Menampilkan form tambah task
     public function create($boardId, $listId)
     {
-        $lists = \App\Models\ListTask::where('board_id', $boardId)->get();
-    
+        $lists = ListTask::where('board_id', $boardId)->get();
         return view('tasks.create', compact('lists', 'boardId', 'listId'));
     }
     
+    
 
     // Menyimpan task ke database
-    public function store(Request $request)
+    public function store(Request $request, $boardId, $listId)
     {
         $request->validate([
             'name' => 'required|string',
-            'list_id' => 'required|exists:lists,id',
             'priority' => 'required|in:Rendah,Sedang,Tinggi',
             'status' => 'required|in:Belum Selesai,Selesai',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
         ]);
-    
-        Task::create($request->all());
-    
+        
+        // Create task and associate with the correct board and list
+        Task::create([
+            'name' => $request->name,
+            'priority' => $request->priority,
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'description' => $request->description,
+            'list_id' => $listId, // Set the list_id to the listId parameter
+        ]);
+        
         return redirect()->route('tasks.index', [
-            'boardId' => $request->board_id,
-            'listId' => $request->list_id
+            'boardId' => $boardId,
+            'listId' => $listId
         ])->with('success', 'Task berhasil ditambahkan!');
     }
     
@@ -102,13 +113,38 @@ class TaskController extends Controller
     // Menghapus task
 
     public function destroy($boardId, $listId, $id)
-    {
-        $task = Task::findOrFail($id);
-        $task->delete();
+{
+    // Temukan task berdasarkan ID
+    $task = Task::findOrFail($id);
+    $task->delete();
 
-        return redirect()->back()->with('success', 'Task berhasil dihapus!', compact('task', 'boardId', 'listId'));
-    }
+    // Redirect atau lakukan hal lain
+    return redirect()->route('tasks.index', ['boardId' => $boardId, 'listId' => $listId])
+        ->with('success', 'Task berhasil dihapus!');
+}
 
+public function showCalendar()
+{
+    return view('calendar.index'); // Menampilkan halaman kalender
+}
+
+public function getCalendarEvents()
+{
+    // Ambil data task yang sudah ada di database
+    $tasks = Task::all();
     
+    // Format data task agar bisa digunakan di FullCalendar
+    $events = $tasks->map(function($task) {
+        return [
+            'title' => $task->name,
+            'start' => $task->start_date, // atau task->end_date jika ada
+            'end' => $task->end_date, // jika ada end_date
+            'description' => $task->description,
+        ];
+    });
+    
+    // Kirim response berupa JSON
+    return response()->json($events);
+}
 }
 

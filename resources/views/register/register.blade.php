@@ -6,57 +6,62 @@
     <title>ToList - Register</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
         .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f8f8f8;
+            background: linear-gradient(135deg, #ffe5e5, #ffd6d6);
         }
         .card-custom {
-            background-color: #eee;
+            background-color: #ffffff;
             border-radius: 15px;
             padding: 30px;
             width: 350px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .title-pink {
-            color:  #813636;
+            color: #ff7070;
             font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
         }
         .form-label {
             font-weight: bold;
-            color: black;
+            color: #333;
             font-size: 14px;
             margin-bottom: 5px;
-            text-align: left;
-            display: block;
         }
         .input-custom {
-            background-color: #c99595;
+            background-color: #ffbaba;
             border: none;
             border-radius: 10px;
             height: 45px;
-            color: white;
+            color: #333;
             text-align: center;
+            margin-bottom: 15px;
         }
         .input-custom::placeholder {
-            color: white;
+            color: #666;
             opacity: 0.7;
         }
         .btn-custom {
-            background-color: #a44d4d;
+            background-color: #ff7070;
             color: white;
             border: none;
             border-radius: 10px;
             height: 45px;
             font-weight: bold;
+            transition: 0.3s;
         }
         .btn-custom:hover {
-            background-color: #813636;
+            background-color: #d15a5a;
         }
         .text-link {
-            color: black;
+            color: #333;
             font-size: 14px;
             text-decoration: none;
         }
@@ -64,7 +69,7 @@
             text-decoration: underline;
         }
         .text-link-login {
-            color: #813636;
+            color: #ff7070;
             font-size: 14px;
             text-decoration: none;
         }
