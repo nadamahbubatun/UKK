@@ -10,3 +10,105 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #f9e7e7, #fdf7f7);
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: 260px;
+  background: linear-gradient(135deg, #ff8c8c, #ffbaba);
+  padding: 30px 20px;
+  height: 100vh;
+  position: fixed;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.sidebar h4 {
+  color: white;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.content {
+  margin-left: 270px;
+  padding: 40px;
+  width: 100%;
+}
+
+.content h2 {
+  font-weight: 700;
+  color: #ff7070;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(255, 137, 137, 0.2);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(255, 137, 137, 0.3);
+}
+
+.dashboard-icon {
+  font-size: 40px;
+  color: #ff6b6b;
+  margin-bottom: 15px;
+}
+
+.dashboard-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+
+.dashboard-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .content {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

@@ -189,15 +189,40 @@
         .close-btn:hover {
             color: red;
         }
+        .list-card:hover {
+    transform: scale(1.05) rotate(-1deg);
+    box-shadow: 0 10px 20px rgba(255, 140, 140, 0.4);
+}
+* {
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease-in-out;
+}
+.btn-primary {
+    background: linear-gradient(270deg, #ff8c8c, #ffbaba);
+    background-size: 200% 200%;
+    animation: gradientMove 4s ease infinite;
+    ...
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.alert-custom {
+    background: linear-gradient(to right, #ffe6e6, #ffdada);
+    border: 1px solid #ffbaba;
+    color: #d04e4e;
+    padding: 16px 24px;
+    border-radius: 20px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(255, 170, 170, 0.2);
+}
+
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h4>ToList</h4>
-        <a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a>
-        <a href="{{ route('board.index') }}" class="active"><i class="fas fa-box"></i> Board</a>
-        <a href="{{ route('calendar.show') }}"><i class="fas fa-calendar-alt"></i> Calendar</a>
-    </div>
+@include('layouts.sidebar')
 
     <div class="content">
         <h2 class="title">{{ $board->name }}</h2>
@@ -221,6 +246,11 @@
                 </form>
             </div>
         </div>
+        <div class="alert-custom text-center mt-4">
+    🎯 Kamu telah membuat <strong>{{ $board->lists->count() }}</strong> list!
+</div>
+
+
 
         <div class="list-container">
             @foreach ($board->lists as $list)
@@ -238,12 +268,13 @@
                                 <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editListModal{{ $list->id }}">Edit</button>
                             </li>
                             <li>
-                                <form action="{{ route('list.destroy', $list->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="dropdown-item text-danger" type="submit" onclick="return confirm('Yakin ingin menghapus list ini?')">Delete</button>
-                                </form>
-                            </li>
+    <form action="{{ route('list.destroy', $list->id) }}" method="POST" class="delete-list-form">
+        @csrf
+        @method('DELETE')
+        <button class="dropdown-item text-danger" type="button" onclick="confirmDeleteList(this)">Delete</button>
+    </form>
+</li>
+
                         </ul>
                     </div>
                 </div>
@@ -294,5 +325,25 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+  function confirmDeleteList(button) {
+    Swal.fire({
+      title: 'Yakin ingin menghapus list ini?',
+      text: "Semua task dalam list juga akan ikut terhapus.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e3342f',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        button.closest('form').submit();
+      }
+    });
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>

@@ -24,7 +24,11 @@ class User extends Authenticatable
     ];
 
 
-
+    public function boards()
+    {
+        return $this->hasMany(\App\Models\Board::class);
+    }
+    
     /**
      * Get the attributes that should be cast.
      *

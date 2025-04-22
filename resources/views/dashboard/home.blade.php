@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="css/app.css">
+
   <style>
     * {
       font-family: 'Poppins', sans-serif;
@@ -107,19 +109,17 @@
       }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
 
-  <div class="sidebar">
-    <h4><i class="fas fa-check-circle me-2"></i>ToList ✨</h4>
-    <!-- Home link dengan kondisi active -->
-    <a href="{{ route('home') }}" class="{{ Request::is('home') ? 'active' : '' }}"><i class="fas fa-home me-2"></i> Home</a>
-    <a href="{{ route('board.index') }}" class="{{ Request::is('board*') ? 'active' : '' }}"><i class="fas fa-columns me-2"></i> Board</a>
-    <a href="{{ route('calendar.show') }}" class="{{ Request::is('calendar*') ? 'active' : '' }}"><i class="fas fa-calendar-alt me-2"></i> Calendar</a>
-  </div>
+  @include('layouts.sidebar')
 
   <div class="content">
     <h2>Welcome back! 🚀</h2>
+
+    
 
     <div class="row g-4">
       <div class="col-md-6 col-lg-4">
@@ -146,7 +146,89 @@
         </div>
       </div>
     </div>
+    <div class="mt-7" style="max-width: 900px;">
+  <h4 class="mb-4">Activity Overview</h4>
+  <canvas id="dashboardChart" height="250"></canvas>
+</div>
+
   </div>
 
 </body>
+<script>
+  const ctx = document.getElementById('dashboardChart').getContext('2d');
+
+  const totalBoards = {{ $totalBoards }};
+  const totalLists = {{ $totalLists }};
+  const totalTasks = {{ $totalTasks }};
+
+  const dashboardChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Boards', 'Lists', 'Tasks'],
+      datasets: [{
+        label: 'Jumlah Total',
+        data: [totalBoards, totalLists, totalTasks],
+        fill: true,
+        backgroundColor: 'rgba(255, 140, 140, 0.2)',
+        borderColor: 'rgba(255, 112, 112, 1)',
+        tension: 0.3,
+        pointBackgroundColor: '#ff7070',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#ff7070'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ff8c8c',
+            font: {
+              weight: 'bold'
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#fff0f0',
+          titleColor: '#ff6b6b',
+          bodyColor: '#ff7070',
+          borderColor: '#ffe0e0',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#ff8c8c',
+            font: {
+              weight: 'bold'
+            }
+          },
+          grid: {
+            color: '#fff0f0'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            color: '#ff8c8c',
+            font: {
+              weight: 'bold'
+            }
+          },
+          grid: {
+            color: '#ffe5e5'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
+
+
+
 </html>

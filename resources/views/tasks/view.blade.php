@@ -158,17 +158,48 @@
         width: 100%;
       }
     }
+    /* Tambahan untuk dark mode pada detail task */
+body.dark-mode .card {
+  background-color: #2e2e2e;
+  color: #f1f1f1;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .card-header {
+  background-color: #444;
+  color: #ffbaba;
+}
+
+body.dark-mode .table {
+  background-color: #2e2e2e;
+  color: #f1f1f1;
+}
+
+body.dark-mode .table th {
+  background-color: #444;
+  color: #ffbaba;
+}
+
+body.dark-mode .table td {
+  background-color: #333;
+  color: #f1f1f1;
+}
+
+body.dark-mode .btn-warning {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+body.dark-mode .btn-warning:hover {
+  background-color: #d15a5a;
+}
+
   </style>
 </head>
 
 <body>
+@include('layouts.sidebar')
 
-  <div class="sidebar">
-    <h4><i class="fas fa-check-circle me-2"></i>ToList ✨</h4>
-    <a href="{{ route('home') }}"><i class="fas fa-home me-2"></i> Home</a>
-    <a href="{{ route('board.index') }}" class="active"><i class="fas fa-columns me-2"></i> Board</a>
-    <a href="{{ route('calendar.show') }}"><i class="fas fa-calendar-alt me-2"></i> Calendar</a>
-  </div>
 
   <div class="content">
     <div class="card">

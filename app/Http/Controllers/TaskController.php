@@ -6,18 +6,29 @@ use App\Models\Task;
 use App\Models\ListTask; // Model untuk list
 use Illuminate\Http\Request;
 use App\Models\Board;  // Pastikan Board di-import di sini
-
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
-    public function index($boardId, $listId)
+    public function index(Request $request, $boardId, $listId)
     {
-        $tasks = Task::where('list_id', $listId)->get();
+        $search = $request->input('search');
+        $status = $request->input('status'); // Ambil filter status
+    
+        $tasks = Task::where('list_id', $listId)
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->get();
+    
         $lists = ListTask::findOrFail($listId);
         $boards = Board::findOrFail($boardId);
-    
-        // Pastikan listId dan boardId diteruskan ke view
-        return view('dashboard.listdetail', compact('tasks', 'lists', 'boards', 'boardId', 'listId'));
+        $notifications = $this->getUpcomingDeadlines();
+
+        return view('dashboard.listdetail', compact('tasks', 'lists', 'boards', 'boardId', 'listId','notifications'));
     }
     
     
@@ -36,7 +47,7 @@ class TaskController extends Controller
         $request->validate([
             'name' => 'required|string',
             'priority' => 'required|in:Rendah,Sedang,Tinggi',
-            'status' => 'required|in:Belum Selesai,Selesai',
+            'status' => 'required|in:Belum Selesai,On Progress,Selesai',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
@@ -51,6 +62,7 @@ class TaskController extends Controller
             'end_date' => $request->end_date,
             'description' => $request->description,
             'list_id' => $listId, // Set the list_id to the listId parameter
+            'user_id' => auth()->id(),
         ]);
         
         return redirect()->route('tasks.index', [
@@ -78,11 +90,25 @@ class TaskController extends Controller
     public function updateStatus($id)
     {
         $task = Task::findOrFail($id);
-        $task->status = $task->status === 'Belum Selesai' ? 'Selesai' : 'Belum Selesai';
+    
+        switch ($task->status) {
+            case 'Belum Selesai':
+                $task->status = 'On Progress';
+                break;
+            case 'On Progress':
+                $task->status = 'Selesai';
+                break;
+            case 'Selesai':
+            default:
+                $task->status = 'Belum Selesai';
+                break;
+        }
+    
         $task->save();
     
         return redirect()->back()->with('success', 'Status task berhasil diubah!');
     }
+    
     public function edit($boardId, $listId, $id)
     {
         $task = Task::findOrFail($id);
@@ -95,7 +121,7 @@ class TaskController extends Controller
         $request->validate([
             'name' => 'required|string',
             'priority' => 'required|in:Rendah,Sedang,Tinggi',
-            'status' => 'required|in:Belum Selesai,Selesai',
+            'status' => 'required|in:Belum Selesai,On Progress,Selesai',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
@@ -130,21 +156,41 @@ public function showCalendar()
 
 public function getCalendarEvents()
 {
-    // Ambil data task yang sudah ada di database
-    $tasks = Task::all();
-    
-    // Format data task agar bisa digunakan di FullCalendar
-    $events = $tasks->map(function($task) {
+    $tasks = Task::where('user_id', auth()->id())->get();
+
+    $events = $tasks->filter(function ($task) {
+        // Pastikan hanya task yang punya tanggal mulai yang diproses
+        return !is_null($task->start_date);
+    })->map(function ($task) {
         return [
             'title' => $task->name,
-            'start' => $task->start_date, // atau task->end_date jika ada
-            'end' => $task->end_date, // jika ada end_date
+            'start' => \Carbon\Carbon::parse($task->start_date)->toDateString(),
+            'end' => $task->end_date 
+                ? \Carbon\Carbon::parse($task->end_date)->addDay()->toDateString() 
+                : null, // end bersifat opsional, tapi jika ada ditambahkan 1 hari agar inklusif
             'description' => $task->description,
         ];
-    });
-    
-    // Kirim response berupa JSON
+    })->values(); // reset index array
+
     return response()->json($events);
 }
+
+
+
+public function getUpcomingDeadlines()
+{
+    $today = Carbon::today();
+    $threshold = Carbon::today()->addDays(3); // batas 3 hari ke depan
+
+    $tasks = Task::where('user_id', auth()->id())
+        ->whereNotNull('end_date')
+        ->whereBetween('end_date', [$today, $threshold])
+        ->whereIn('status', ['Belum Selesai', 'On Progress', 'Selesai'])
+        ->get();
+
+    return $tasks;
+}
+
+
 }
 

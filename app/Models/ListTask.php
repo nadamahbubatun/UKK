@@ -14,11 +14,12 @@ class ListTask extends Model
 
     public function board()
     {
-        return $this->belongsTo(Board::class);
+        return $this->belongsTo(Board::class, 'board_id');
     }
-
+    
     public function tasks()
     {
         return $this->hasMany(Task::class, 'list_id');
     }
+    
 }

@@ -9,10 +9,11 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['list_id','name', 'list_id', 'status', 'priority', 'start_date', 'end_date', 'description'];
+    protected $fillable = ['list_id','name', 'list_id', 'status', 'priority', 'start_date', 'end_date', 'description', 'user_id'];
 
     public function list()
     {
         return $this->belongsTo(ListTask::class, 'list_id');
     }
+    
 }

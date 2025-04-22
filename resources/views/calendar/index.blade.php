@@ -112,17 +112,54 @@
                 padding: 20px;
             }
         }
+        body.dark {
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+}
+
+body.dark .content h2 {
+    color: #ffbaba;
+}
+
+body.dark #calendar {
+    background: #2e2e2e;
+    color: #f0f0f0;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .fc-event {
+    background-color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
+    color: #fff !important;
+}
+
+body.dark .fc-day-header,
+body.dark .fc-day-number {
+    color: #f0f0f0;
+}
+
+body.dark .fc-toolbar h2 {
+    color: #ffbaba;
+}
+
+body.dark .fc-button {
+    background-color: #444 !important;
+    border: none;
+    color: #f0f0f0 !important;
+}
+
+body.dark .fc-button:hover {
+    background-color: #666 !important;
+}
+
+body.dark .fc-unthemed td,
+body.dark .fc-unthemed th {
+    border-color: #444;
+}
+
     </style>
 </head>
 <body>
-    {{-- Sidebar --}}
-    <div class="sidebar">
-        <h4><i class="fas fa-check-circle me-2"></i>ToList ✨</h4>
-        <a href="{{ route('home') }}"><i class="fas fa-home me-2"></i> Home</a>
-        <a href="{{ route('board.index') }}"><i class="fas fa-columns me-2"></i> Board</a>
-        <a href="{{ route('calendar.show') }}" class="active"><i class="fas fa-calendar-alt me-2"></i> Calendar</a>
-    </div>
-
+@include('layouts.sidebar')
     {{-- Content --}}
     <div class="content">
         <h2>Calendar</h2>
@@ -151,6 +188,8 @@
                 }
             });
         });
+        
     </script>
+    
 </body>
 </html>
