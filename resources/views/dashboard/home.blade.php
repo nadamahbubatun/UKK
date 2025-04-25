@@ -157,7 +157,7 @@
 <script>
   const ctx = document.getElementById('dashboardChart').getContext('2d');
 
-  const totalBoards = {{ $totalBoards }};
+  const totalBoards = {{ $totalBoards }}; 
   const totalLists = {{ $totalLists }};
   const totalTasks = {{ $totalTasks }};
 

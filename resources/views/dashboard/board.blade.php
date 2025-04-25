@@ -309,7 +309,7 @@ body.dark {
 .board-card.new-board {
   background-color: var(--card-bg);
   color: var(--text-primary);
-  border: 2px dashed var(--text-dark); /* agar border kontras dan ikut mode */
+  border: 2px dashed var(--text-dark); 
 }
 .empty-placeholder,
 h5,
@@ -358,7 +358,7 @@ h2 {
 </li>
 
             </ul>
-          </div>
+          </div>   
         </a>
       @empty
         <div class="empty-placeholder">

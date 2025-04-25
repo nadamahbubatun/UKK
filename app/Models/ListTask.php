@@ -21,5 +21,9 @@ class ListTask extends Model
     {
         return $this->hasMany(Task::class, 'list_id');
     }
-    
+    public function completedTasks()
+{
+    return $this->tasks()->where('status', 'selesai'); 
+}
+
 }

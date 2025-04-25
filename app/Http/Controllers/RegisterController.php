@@ -36,7 +36,7 @@ class RegisterController extends Controller
             ->withInput();
     }
 
-    // Buat user baru
+ 
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
@@ -45,10 +45,7 @@ class RegisterController extends Controller
 
     event(new Registered($user));
 
-    // ✅ Jangan login otomatis
-    // auth()->login($user); <-- HAPUS baris ini
-
-    // ✅ Redirect ke halaman login
+   
     return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
 }
 

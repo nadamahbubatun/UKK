@@ -8,8 +8,8 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $user = auth()->user(); // Ambil data user yang sedang login
-        $boards = $user->boards; // Ambil semua board milik user
+        $user = auth()->user(); 
+        $boards = $user->boards; 
 
         return view('profile.index', compact('user', 'boards'));
     }

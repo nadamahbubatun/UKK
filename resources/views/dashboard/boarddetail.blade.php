@@ -218,6 +218,12 @@
     font-weight: 500;
     box-shadow: 0 4px 8px rgba(255, 170, 170, 0.2);
 }
+.completed-card {
+    background: linear-gradient(to right, #d4edda, #a9dfbf);
+    color: #155724 !important;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
 
     </style>
 </head>
@@ -252,97 +258,84 @@
 
 
 
-        <div class="list-container">
-            @foreach ($board->lists as $list)
-                <div class="position-relative">
-                    <a href="{{ route('tasks.index', ['boardId' => $board->id, 'listId' => $list->id]) }}" class="list-card">
-                        {{ $list->name }}
-                    </a>
+        <div class="list-container"><div class="list-container">
+        @foreach ($board->lists as $list)
+    @php
+        // Menghitung jumlah task selesai
+        $totalTasks = $list->tasks->count();
+        $completedTasks = $list->completedTasks->count(); // Menggunakan method completedTasks()
+    @endphp
+    <div class="position-relative">
+        
+    @php
+    $isAllCompleted = $totalTasks > 0 && $completedTasks == $totalTasks;
+@endphp
 
-                    <div class="dropdown options">
-                        <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editListModal{{ $list->id }}">Edit</button>
-                            </li>
-                            <li>
-    <form action="{{ route('list.destroy', $list->id) }}" method="POST" class="delete-list-form">
-        @csrf
-        @method('DELETE')
-        <button class="dropdown-item text-danger" type="button" onclick="confirmDeleteList(this)">Delete</button>
-    </form>
-</li>
+<a href="{{ route('tasks.index', ['boardId' => $board->id, 'listId' => $list->id]) }}" class="list-card d-flex flex-column justify-content-center align-items-center {{ $isAllCompleted ? 'completed-card' : '' }}">
 
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Modal Edit List -->
-                <div class="modal fade" id="editListModal{{ $list->id }}" tabindex="-1" aria-labelledby="editListModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content rounded-3">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit List</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{ route('list.update', $list->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label class="form-label">List Name</label>
-                                        <input type="text" class="form-control" name="name" value="{{ $list->name }}" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+            <div>{{ $list->name }}</div>
+            <small class="text-muted mt-2">{{ $completedTasks }}/{{ $totalTasks }} tasks selesai</small>
+        </a>
+        <div class="dropdown options">
+            <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editListModal{{ $list->id }}">Edit</button>
+                </li>
+                <li>
+                    <form action="{{ route('list.destroy', $list->id) }}" method="POST" class="delete-list-form">
+                        @csrf
+                        @method('DELETE')
+                        <button class="dropdown-item text-danger" type="button" onclick="confirmDeleteList(this)">Delete</button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
+@endforeach
+    </div>
+</div>
 
-    <script>
-        function openPopup() {
-            document.getElementById('popupForm').style.display = 'flex';
-        }
+<!-- Scripts -->
+<script>
+    function openPopup() {
+        document.getElementById('popupForm').style.display = 'flex';
+    }
 
-        function closePopup() {
-            document.getElementById('popupForm').style.display = 'none';
-        }
+    function closePopup() {
+        document.getElementById('popupForm').style.display = 'none';
+    }
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-            let filter = this.value.toLowerCase();
-            let listItems = document.querySelectorAll('.list-container .list-card');
+    document.getElementById('searchInput').addEventListener('input', function () {
+        let filter = this.value.toLowerCase();
+        let listItems = document.querySelectorAll('.list-container .list-card');
 
-            listItems.forEach(function (item) {
-                let text = item.textContent.trim().toLowerCase();
-                item.style.display = text.includes(filter) ? "flex" : "none";
-            });
+        listItems.forEach(function (item) {
+            let text = item.textContent.trim().toLowerCase();
+            item.style.display = text.includes(filter) ? "flex" : "none";
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-  function confirmDeleteList(button) {
-    Swal.fire({
-      title: 'Yakin ingin menghapus list ini?',
-      text: "Semua task dalam list juga akan ikut terhapus.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#e3342f',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Ya, hapus!',
-      cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        button.closest('form').submit();
-      }
     });
-  }
+
+    function confirmDeleteList(button) {
+        Swal.fire({
+            title: 'Yakin ingin menghapus list ini?',
+            text: "Semua task dalam list juga akan ikut terhapus.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e3342f',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                button.closest('form').submit();
+            }
+        });
+    }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>

@@ -82,13 +82,15 @@
 
   /* === Layout === */
   body {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #ffe5e5, #ffd6d6);
-    margin: 0;
-    padding: 0;
-  }
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to right, #ffe5e5, #ffd6d6);
+  margin: 0;
+  padding: 0;
+  position: relative; /* Tambahkan ini */
+}
+
 
   .sidebar {
     width: 250px;
@@ -141,20 +143,41 @@
     font-size: 12px;
   }
 
-  #notification-dropdown {
-    display: none;
-    list-style: none;
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    position: absolute;
-    top: 30px;
-    left: 0;
-    width: 220px;
-    z-index: 999;
-    color: black;
-  }
+  
+  .notification-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999; /* agar muncul di atas elemen lain */
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+#notification-dropdown {
+  display: none;
+  list-style: none;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position: fixed;
+  top: 50px; /* geser ke bawah dari ikon */
+  right: 20px;
+  width: 250px;
+  z-index: 1000;
+  color: black;
+}
+
+
 </style>
 
 <div class="sidebar">
@@ -165,32 +188,6 @@
   </div>
 
   <!-- Notification -->
-  <div class="notification-wrapper">
-    <div class="notification-icon" onclick="toggleNotificationDropdown()">
-      🔔
-      @if(isset($notifications) && $notifications->count() > 0)
-        <span class="badge">{{ $notifications->count() }}</span>
-      @endif
-    </div>
-    <ul id="notification-dropdown">
-      @if(isset($notifications) && $notifications->count() > 0)
-        @foreach($notifications as $task)
-          @php
-            $daysLeft = \Carbon\Carbon::parse($task->end_date)->diffInDays(\Carbon\Carbon::today(), false);
-            $isUrgent = $daysLeft <= 1;
-          @endphp
-          <li style="margin-bottom: 8px; font-size: 14px;">
-            📌 <strong>{{ $task->name }}</strong><br>
-            <small style="color: {{ $isUrgent ? 'red' : '#555' }}">
-              {{ $isUrgent ? '⚠️ ' : '' }}Deadline: {{ \Carbon\Carbon::parse($task->end_date)->format('d M Y') }}
-            </small>
-          </li>
-        @endforeach
-      @else
-        <li>Tidak ada notifikasi</li>
-      @endif
-    </ul>
-  </div>
 
   <!-- Navigation -->
   <a href="{{ route('profile') }}">Profil</a>
@@ -214,6 +211,33 @@
     </form>
   </div>
 </div>
+<div class="notification-wrapper">
+    <div class="notification-icon" onclick="toggleNotificationDropdown()">
+      🔔
+      @if(isset($notifications) && $notifications->count() > 0)
+        <span class="badge">{{ $notifications->count() }}</span>
+      @endif
+    </div>
+    <ul id="notification-dropdown">
+      @if(isset($notifications) && $notifications->count() > 0)
+        @foreach($notifications as $task)
+          @php
+            $daysLeft = \Carbon\Carbon::parse($task->end_date)->diffInDays(\Carbon\Carbon::today(), false);
+            $isUrgent = $daysLeft <= 1;
+          @endphp
+          <li style="margin-bottom: 8px; font-size: 14px;">
+            📌 <strong><a href="{{ route('tasks.edit', ['boardId' => $task->list->board->id, 'listId' => $task->list->id, 'id' => $task->id]) }}">{{ $task->name }}</a></strong><br>
+            <small style="color: {{ $isUrgent ? 'red' : '#555' }}">
+              {{ $isUrgent ? '⚠️ ' : '' }}Deadline: {{ \Carbon\Carbon::parse($task->end_date)->format('d M Y') }}
+            </small>
+          </li>
+        @endforeach
+      @else
+        <li>Tidak ada notifikasi</li>
+      @endif
+    </ul>
+  </div>
+
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

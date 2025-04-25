@@ -232,18 +232,23 @@
     margin-right: 8px;
 }
 
+.border-warning {
+    border-left: 4px solid #ffcc00; /* Kuning untuk H-3 deadline */
+}
+
+.border-primary {
+    border-left: 4px solid #007bff; /* Biru untuk jauh dari deadline */
+}
+
+.border-success {
+    border-left: 4px solid #28a745; /* Hijau untuk yang sudah selesai */
+}
+
 
 
 
     </style>
-    <script>
-        function confirmDelete(event) {
-            event.preventDefault();
-            if (confirm('Are you sure you want to delete this task?')) {
-                event.target.closest('form').submit();
-            }
-        }
-    </script>
+   
 </head>
 <body>
      @include('layouts.sidebar')
@@ -273,36 +278,70 @@
         <option value="On Progress" {{ request('status') == 'On Progress' ? 'selected' : '' }}>On Progress</option>
         <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
     </select>
+    
+</form>
+<form action="{{ route('tasks.index', ['boardId' => $boards->id, 'listId' => $lists->id]) }}" method="GET" class="ms-2">
+    <select name="deadline" onchange="this.form.submit()" class="form-select" style="width: 180px;">
+        <option value="">- Semua Deadline -</option>
+        <option value="mendekati" {{ request('deadline') == 'mendekati' ? 'selected' : '' }}>Mendekati Deadline (kuning)</option>
+        <option value="jauh" {{ request('deadline') == 'jauh' ? 'selected' : '' }}>Jauh dari Deadline  (biru)</option>
+    </select>
 </form>
 
     
 </div>
 
-<div class="task-list mt-4">@foreach($tasks as $task)
-    @php
-        $statusClass = match($task->status) {
-            'Belum Selesai' => 'badge bg-secondary',
-            'On Progress' => 'badge bg-warning text-dark',
-            'Selesai' => 'badge bg-success',
-            default => 'badge bg-light text-dark'
-        };
+    <div class="task-list mt-4">
+        @foreach($tasks as $task)
+        @php
+            $statusClass = match($task->status) {
+                'Belum Selesai' => 'badge bg-secondary',
+                'On Progress' => 'badge bg-warning text-dark',
+                'Selesai' => 'badge bg-success',
+                default => 'badge bg-light text-dark'
+            };
 
-        $priorityClass = match($task->priority) {
-            'Tinggi' => 'text-danger',
-            'Sedang' => 'text-warning',
-            'Rendah' => 'text-success',
-            default => 'text-muted'
-        };
+            $priorityClass = match($task->priority) {
+                'Tinggi' => 'text-danger',
+                'Sedang' => 'text-warning',
+                'Rendah' => 'text-success',
+                default => 'text-muted'
+            };
 
-        $cardBorder = match($task->status) {
-            'Belum Selesai' => 'border-start border-4 border-secondary',
-            'On Progress' => 'border-start border-4 border-warning',
-            'Selesai' => 'border-start border-4 border-success',
-            default => 'border-start border-4 border-light'
-        };
-    @endphp
+            $cardBorder = match($task->status) {
+                'Belum Selesai' => 'border-start border-4 border-secondary',
+                'On Progress' => 'border-start border-4 border-warning',
+                'Selesai' => 'border-start border-4 border-success',
+                default => 'border-start border-4 border-light'
+            };
+        @endphp
 
-    <div class="card mb-3 p-3 shadow-sm {{ $cardBorder }}">
+        
+        @php
+    $today = \Carbon\Carbon::today(); // Mendapatkan tanggal hari ini
+    $endDate = \Carbon\Carbon::parse($task->end_date); // Parsing tanggal deadline task
+    $diffInDays = $today->diffInDays($endDate, false); // false agar menghitung selisih positif dan negatif
+@endphp
+@php
+    $today = \Carbon\Carbon::today();
+    $endDate = \Carbon\Carbon::parse($task->end_date);
+    $diffInDays = $today->diffInDays($endDate, false);
+
+    if ($diffInDays > 3) {
+        $cardBorder = 'border-start border-4 border-primary'; // Jauh dari deadline, biru
+    } elseif ($diffInDays <= 3 && $diffInDays >= 0) {
+        $cardBorder = 'border-start border-4 border-warning'; // Mendekati deadline, kuning
+    } elseif ($diffInDays < 0) {
+        $cardBorder = 'border-start border-4 border-success'; // Lewat deadline (asumsinya selesai), hijau
+    } else {
+        $cardBorder = 'border-start border-4 border-light';
+    }
+@endphp
+
+
+
+
+<div class="card mb-3 p-3 shadow-sm {{ $cardBorder }}">
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <h5 class="mb-1">
@@ -317,17 +356,18 @@
                     <i class="bi bi-calendar-event"></i> {{ $task->start_date }} - {{ $task->end_date }}
                 </div>
             </div>
+
             <div class="btn-group btn-group-sm">
-    <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="d-inline">
+             <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="d-inline">
         @csrf
         @method('PATCH')
         <button type="submit" class="btn btn-outline-primary" title="Ubah Status">
             <i class="bi bi-arrow-repeat fs-5"></i>
         </button>
-    </form>
+        </form>
 
     <a href="{{ route('tasks.view', $task->id) }}" class="btn btn-outline-info" title="Lihat Detail">
-        <i class="bi bi-eye fs-5"></i>
+         <i class="bi bi-eye fs-5"></i>
     </a>
 
     <a href="{{ route('tasks.edit', ['boardId' => $boards->id, 'listId' => $lists->id, 'id' => $task->id]) }}" class="btn btn-outline-warning" title="Edit Task">
@@ -372,6 +412,7 @@
   }
 
 </script>
+
 <!-- Bootstrap Bundle (dengan Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

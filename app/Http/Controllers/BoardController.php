@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Board; // Tambahkan ini
+use App\Models\Board; 
 
 class BoardController extends Controller
 {
     public function index()
     {
-        $boards = Board::where('user_id', auth()->id())->get(); // ⬅️ filter berdasarkan user
+        $boards = Board::where('user_id', auth()->id())->get(); 
         return view('dashboard.board', compact('boards'));
     }
     
@@ -20,7 +20,7 @@ class BoardController extends Controller
     
         Board::create([
             'name' => $request->name,
-            'user_id' => auth()->id(), // ⬅️ penting!
+            'user_id' => auth()->id(), 
         ]);
     
         return redirect()->back()->with('success', 'Board berhasil dibuat!');
